@@ -4,21 +4,19 @@ const pool = require("./db");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Protect path
-
+// Middlewares
 const auth = require("./middleware/auth");
-
-//Required Role
 const requireRole = require("./middleware/requireRole");
 
 app.use(express.json());
 
-//EndPoint login
+// Login
 const jwt = require("jsonwebtoken");
 const { USER } = require("./auth");
 
-//Endpoint
-
+// ==========================
+// LOGIN
+// ==========================
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
 
@@ -44,13 +42,13 @@ app.post("/login", (req, res) => {
     res.json({ token });
 });
 
-
-// Healthcheck simple (app viva)
+// ==========================
+// HEALTHCHECKS
+// ==========================
 app.get("/health", (req, res) => {
     res.json({ status: "OK" });
 });
 
-// Healthcheck REAL de DB
 app.get("/db-health", async (req, res) => {
     try {
         const result = await pool.query("SELECT 1");
@@ -68,7 +66,6 @@ app.get("/db-health", async (req, res) => {
     }
 });
 
-
 // ==========================
 // GET all entries
 // ==========================
@@ -85,7 +82,7 @@ app.get("/entries", async (req, res) => {
 });
 
 // ==========================
-// CREATE new entry
+// CREATE new entry (auth)
 // ==========================
 app.post("/entries", auth, async (req, res) => {
     const { title, description } = req.body;
@@ -107,99 +104,10 @@ app.post("/entries", auth, async (req, res) => {
     }
 });
 
-//Another PUT
-
 // ==========================
-// UPDATE entry (PUT)
-// ==========================
-app.put("/entries/:id", async (req, res) => {
-    const { id } = req.params;
-    const { title, description } = req.body;
-
-    if (!title) {
-        return res.status(400).json({ error: "Title is required" });
-    }
-
-    try {
-        const result = await pool.query(
-            `UPDATE entries
-             SET title = $1,
-                 description = $2
-             WHERE id = $3
-             RETURNING *`,
-            [title, description, id]
-        );
-
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: "Entry not found" });
-        }
-
-        res.json(result.rows[0]);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Database error" });
-    }
-});
-
-
-//DELETE WITH JWT
-
-// ==========================
-// DELETE entry
-// ==========================
-app.delete("/entries/:id", async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const result = await pool.query(
-            "DELETE FROM entries WHERE id = $1",
-            [id]
-        );
-
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: "Entry not found" });
-        }
-
-        // 204 = borrado correcto sin contenido
-        res.status(204).send();
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Database error" });
-    }
-});
-
-// ==========================
-// DELETE entry by ID
-// ==========================
-app.delete("/entries/:id", auth, requireRole("admin"), async (req, res) => {
-
-    const { id } = req.params;
-
-    try {
-        const result = await pool.query(
-            "DELETE FROM entries WHERE id = $1 RETURNING *",
-            [id]
-        );
-
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: "Entry not found" });
-        }
-
-        res.json({
-            status: "deleted",
-            entry: result.rows[0],
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Database error" });
-    }
-});
-
-// ==========================
-// UPDATE entry
+// UPDATE entry (admin only)
 // ==========================
 app.put("/entries/:id", auth, requireRole("admin"), async (req, res) => {
-
     const { id } = req.params;
     const { title, description } = req.body;
 
@@ -228,7 +136,35 @@ app.put("/entries/:id", auth, requireRole("admin"), async (req, res) => {
     }
 });
 
+// ==========================
+// DELETE entry (admin only)
+// ==========================
+app.delete("/entries/:id", auth, requireRole("admin"), async (req, res) => {
+    const { id } = req.params;
 
+    try {
+        const result = await pool.query(
+            "DELETE FROM entries WHERE id = $1 RETURNING *",
+            [id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Entry not found" });
+        }
+
+        res.json({
+            status: "deleted",
+            entry: result.rows[0],
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Database error" });
+    }
+});
+
+// ==========================
+// START SERVER
+// ==========================
 app.listen(PORT, () => {
     console.log(`Backend running on port ${PORT}`);
 });
