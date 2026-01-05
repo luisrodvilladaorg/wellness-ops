@@ -51,6 +51,9 @@ app.get("/health", (req, res) => {
     res.json({ status: "OK" });
 });
 
+
+
+
 app.get("/db-health", async (req, res) => {
     try {
         const result = await pool.query("SELECT 1");
