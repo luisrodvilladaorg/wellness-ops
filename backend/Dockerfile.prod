@@ -13,8 +13,13 @@ COPY package*.json ./
 # Instalamos SOLO dependencias de prod
 RUN npm ci --omit=dev
 
+RUN npm install 
+
 # Copiamos código
 COPY src ./src
+
+COPY test ./test
+
 
 # ---------- Runtime stage ----------
 FROM node:20-alpine
