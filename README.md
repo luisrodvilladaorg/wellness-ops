@@ -111,8 +111,10 @@ Proper use of reverse proxies
 Production-minded service orchestration
 
 It is designed to reflect junior-to-mid DevOps / infrastructure engineering skills in a clear and auditable way.
-
-30/12
-Auth complete
+06/01
+Auth funcionando
+Form working
+App working 
+Stack 100%
 
 

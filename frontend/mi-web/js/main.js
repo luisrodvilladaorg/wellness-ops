@@ -1,21 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-    let editingEntryId = null;
-
-    const form = document.getElementById("entry-form");
-    const list = document.getElementById("entries-list");
     const loginSection = document.getElementById("login-section");
     const appSection = document.getElementById("app-section");
+    const form = document.getElementById("entry-form");
+    const list = document.getElementById("entries-list");
 
-    // ==========================
+    // =========================
     // Helpers
-    // ==========================
+    // =========================
     function getToken() {
         return localStorage.getItem("token");
-    }
-
-    function showApp() {
-        loginSection.style.display = "none";
-        appSection.style.display = "block";
     }
 
     function showLogin() {
@@ -23,9 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
         appSection.style.display = "none";
     }
 
-    // ==========================
+    function showApp() {
+        loginSection.style.display = "none";
+        appSection.style.display = "block";
+    }
+
+    // =========================
     // Load entries
-    // ==========================
+    // =========================
     async function loadEntries() {
         const res = await fetch("/api/entries");
         if (!res.ok) return;
@@ -41,12 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ==========================
-    // Login
-    // ==========================
+    // =========================
+    // LOGIN
+    // =========================
     window.login = async function () {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
+        const error = document.getElementById("login-error");
+
+        error.innerText = "";
 
         const res = await fetch("/api/auth/login", {
             method: "POST",
@@ -55,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (!res.ok) {
-            document.getElementById("login-error").innerText = "Login incorrecto";
+            error.innerText = "Login incorrecto";
             return;
         }
 
@@ -66,34 +67,36 @@ document.addEventListener("DOMContentLoaded", () => {
         loadEntries();
     };
 
-    // ==========================
-    // Create / Update entry
-    // ==========================
+    // =========================
+    // LOGOUT
+    // =========================
+    window.logout = function () {
+        localStorage.removeItem("token");
+        showLogin();
+    };
+
+    // =========================
+    // FORM SUBMIT
+    // =========================
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const title = document.getElementById("entry-title").value.trim();
         const description = document.getElementById("entry-description").value.trim();
+        const token = getToken();
+
+        if (!token) {
+            alert("Debes iniciar sesión");
+            return;
+        }
 
         if (!title) {
             alert("Title is required");
             return;
         }
 
-        const token = getToken();
-        if (!token) {
-            alert("Debes iniciar sesión");
-            showLogin();
-            return;
-        }
-
-        const method = editingEntryId ? "PUT" : "POST";
-        const url = editingEntryId
-            ? `/api/entries/${editingEntryId}`
-            : "/api/entries";
-
-        const res = await fetch(url, {
-            method,
+        const res = await fetch("/api/entries", {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -102,18 +105,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (!res.ok) {
-            alert("Error saving entry");
+            alert("Error al guardar");
             return;
         }
 
-        editingEntryId = null;
         form.reset();
         loadEntries();
     });
 
-    // ==========================
-    // Init
-    // ==========================
+    // =========================
+    // INIT
+    // =========================
     if (getToken()) {
         showApp();
         loadEntries();
