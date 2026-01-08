@@ -29,4 +29,4 @@ jobs:
         run: npm test
 
       - name: Build backend Docker image
-        run: docker build -t wellness-backend:ci ./backend
+        run: docker build -f backend/Dockerfile.dev -t wellness-backend:ci backend
