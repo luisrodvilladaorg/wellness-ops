@@ -1,22 +1,69 @@
-name: Backend CD
+services:
+  frontend:
+    image: wellness-frontend:prod
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: wellness-frontend
+    networks:
+      - web_net
+    restart: unless-stopped
 
-on:
-  push:
-    branches:
-      - main
+  nginx:
+    image: ghcr.io/luisrodvillada/wellnes-ops-nginx:latest
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.prod
+    container_name: wellness-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - web_net
+      - backend_net
+    restart: unless-stopped
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  backend:
+    image: ghcr.io/luisrodvillada/wellnes-ops-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: wellness-backend-prod
+    env_file:
+      - env/prod/.env
+    networks:
+      - backend_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+  postgres:
+    image: postgres:15-alpine
+    container_name: wellness-postgres
+    env_file:
+      - env/prod/.env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - backend_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-    steps:
-      - name: SSH deploy
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            cd /opt/wellness-ops
-            docker compose pull backend
-            docker compose up -d backend
+networks:
+  web_net:
+    driver: bridge
+  backend_net:
+    driver: bridge
+volumes:
+  db-data:
+
