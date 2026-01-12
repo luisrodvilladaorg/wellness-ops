@@ -1,36 +1,22 @@
-name: Backend CI
+name: Backend CD
 
 on:
   push:
-    branches: [main]
-  pull_request:
+    branches:
+      - main
 
 jobs:
-  backend-ci:
+  deploy:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      packages: write
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Login to GHCR
-        uses: docker/login-action@v3
+      - name: SSH deploy
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build backend image
-        run: |
-          docker build \
-            -f backend/Dockerfile.prod \
-            -t ghcr.io/${{ github.repository }}-backend:latest \
-            backend
-
-      - name: Push backend image
-        run: |
-          docker push ghcr.io/${{ github.repository }}-backend:latest
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /opt/wellness-ops
+            docker compose pull backend
+            docker compose up -d backend
