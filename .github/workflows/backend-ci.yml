@@ -30,4 +30,4 @@ jobs:
             echo "🚀 Restarting backend container"
             docker compose up -d --no-deps backend
 
-            echo "✅ Backend deployed successfully"
+            echo "✅ Backend deployed  proff successfully"
