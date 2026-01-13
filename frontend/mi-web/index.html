@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Ops</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/templatemo-style.css">
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- NAVBAR -->
+    <!-- ========================= -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-notes-medical me-2"></i>
+                Wellness Ops
+            </a>
+
+            <!-- USER INFO + LOGOUT -->
+            <div id="navbar-user" class="ms-auto d-none d-flex align-items-center text-white">
+                <span id="user-info" class="me-3"></span>
+                <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========================= -->
+    <!-- HERO -->
+    <!-- ========================= -->
+    <div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll"
+        data-image-src="img/hero.jpg">
+        <h1 class="text-white">Wellness Journal</h1>
+    </div>
+
+    <div class="container-fluid tm-container-content tm-mt-60">
+
+        <!-- ========================= -->
+        <!-- LOGIN SECTION -->
+        <!-- ========================= -->
+        <section id="login-section">
+            <h2>Welcome to Wellness Ops From Luis</h2>
+            <p>Please log in to continue</p>
+
+            <input id="username" placeholder="Username" class="form-control mb-2" />
+            <input id="password" type="password" placeholder="Password" class="form-control mb-3" />
+
+            <button class="btn btn-primary" onclick="login()">Login</button>
+
+            <p id="login-error" class="mt-2 text-danger"></p>
+        </section>
+
+        <!-- ========================= -->
+        <!-- APP SECTION (AUTH REQUIRED) -->
+        <!-- ========================= -->
+        <section id="app-section" style="display:none;">
+
+            <!-- ========================= -->
+            <!-- ENTRIES LIST -->
+            <!-- ========================= -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="tm-text-primary">Latest Entries</h2>
+                    <ul id="entries-list" class="list-group mt-3"></ul>
+                </div>
+            </div>
+
+            <!-- ========================= -->
+            <!-- ADD ENTRY FORM -->
+            <!-- ========================= -->
+            <div class="row mb-5">
+                <div class="col-md-8 col-lg-6">
+                    <h3 class="tm-text-primary mb-3">Add New Entry</h3>
+
+                    <form id="entry-form">
+                        <input id="entry-title" class="form-control mb-2" placeholder="Title" required />
+                        <textarea id="entry-description" class="form-control mb-3" placeholder="Description"></textarea>
+                        <button type="submit" class="btn btn-success">Save entry</button>
+                    </form>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- FOOTER -->
+    <!-- ========================= -->
+    <footer class="tm-bg-gray pt-4 pb-4 tm-text-gray tm-footer">
+        <div class="container-fluid text-center">
+            <p class="mb-0">
+                Wellness Ops · Docker · Node.js · PostgreSQL
+            </p>
+        </div>
+    </footer>
+
+    <!-- ========================= -->
+    <!-- SCRIPTS -->
+    <!-- ========================= -->
+    <script src="/js/plugins.js"></script>
+    <script src="/js/main.js"></script>
+
+</body>
+
+</html>

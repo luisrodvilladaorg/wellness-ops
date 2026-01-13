@@ -1,0 +1,17 @@
+# ==========================
+# Frontend PROD
+# ==========================
+
+# 1️⃣ Usamos Nginx oficial (ligero y estándar)
+FROM nginx:stable-alpine
+
+# 2️⃣ Limpiamos la config por defecto (opcional pero profesional)
+RUN rm -rf /usr/share/nginx/html/*
+
+# 3️⃣ Copiamos la web estática ya preparada
+COPY mi-web/ /usr/share/nginx/html/
+
+# 4️⃣ Exponemos el puerto interno (solo para docker, NO público)
+EXPOSE 80
+
+# 5️⃣ Nginx arranca solo (CMD ya definido en la imagen base)

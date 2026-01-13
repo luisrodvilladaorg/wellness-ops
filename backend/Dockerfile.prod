@@ -1,0 +1,43 @@
+# ==========================
+# Backend API - PROD
+# ==========================
+
+# ---------- Build stage ----------
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+# Copiamos solo manifests
+COPY package*.json ./
+
+# Instalamos SOLO dependencias de prod
+RUN npm ci --omit=dev
+
+RUN npm install 
+
+# Copiamos código
+COPY src ./src
+
+COPY test ./test
+
+
+# ---------- Runtime stage ----------
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copiamos app ya lista
+COPY --from=build /app ./
+
+# Variables por defecto (sobrescribibles)
+ENV NODE_ENV=production
+ENV PORT=3000
+
+EXPOSE 3000
+
+# Healthcheck
+HEALTHCHECK --interval=10s --timeout=3s \
+    CMD wget -qO- http://localhost:3000/health || exit 1
+
+# Arranque
+CMD ["node", "src/server.js"]
