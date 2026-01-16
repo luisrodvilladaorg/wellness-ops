@@ -1,0 +1,24 @@
+name: Test Runner
+
+on:
+    workflow_dispatch:
+
+jobs:
+    test:
+        runs-on: self-hosted
+
+        steps:
+            - name: Show runner info
+              run: |
+                  echo "Runner is working"
+                  hostname
+                  whoami
+                  pwd
+
+            - name: Create test file in /opt
+              run: |
+                  echo "Hola Luis, el runner funciona" | sudo tee /opt/runner-test.txt
+
+            - name: List /opt directory
+              run: |
+                  ls -l /opt
