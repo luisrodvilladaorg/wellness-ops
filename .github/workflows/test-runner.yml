@@ -8,10 +8,10 @@ jobs:
         runs-on: [self-hosted, Linux, X64]
 
         steps:
-            - name: Proof execution
+            - name: Proof
               run: |
-                  echo "RUNNING ON SELF-HOSTED RUNNER"
+                  echo "RUNNER OK"
+                  echo "Repo: $GITHUB_REPOSITORY"
                   hostname
                   whoami
                   pwd
-                  date
