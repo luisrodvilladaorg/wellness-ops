@@ -28,3 +28,9 @@ jobs:
       # 4️⃣ Mostrar contenedores2
       - name: Show running containers
         run: docker ps
+      - name: Proof of execution
+        run: |
+        echo "CI/CD RUNNING ON HOST:"
+        hostname
+        whoami
+        date
