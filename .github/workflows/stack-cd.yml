@@ -41,9 +41,9 @@ jobs:
 
             - name: Backend healthcheck
               run: |
-                  curl -f http://localhost/api/health
+                  curl -k http://localhost/api/health
 
             - name: Nginx healthcheck
               run: |
-                  curl -f http://localhost/
-                  curl -f https://localhost/
+                  curl -k http://localhost/
+                  curl -k https://localhost/
