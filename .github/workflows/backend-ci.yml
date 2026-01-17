@@ -20,9 +20,9 @@ jobs:
               run: |
                   test -f backend/Dockerfile.prod
                   test -f backend/package.json
-                  test -f backend/app.js
-                  test -d backend/routes
-                  test -d backend/middleware
+                  test -f backend/src/app.js
+                  test -d backend/src/routes
+                  test -d backend/src/middleware
 
             # 3️⃣ Instalamos Node.js (versión estable)
             - name: Set up Node.js
