@@ -1,4 +1,4 @@
-name: Nginx CI
+name: Nginx CI2
 
 # 🔹 Se ejecuta cuando hay cambios en main o PR
 on:
