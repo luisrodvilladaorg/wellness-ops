@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Validamos sintaxis del archivo `nginx.ci.conf`
+      # 2️⃣ Validación de la configuración de Nginx
       - name: Validate nginx configuration
         run: |
           docker run --rm \
@@ -24,21 +24,16 @@ jobs:
             nginx:stable-alpine \
             nginx -t
 
-      # 3️⃣ Validamos que Certificados SSL (si aplica) estén presentes
+      # 3️⃣ Validar Certificados SSL (opcional si aplica)
       - name: Validate SSL Certificates
         run: |
           test -f nginx/certs/server.crt
           test -f nginx/certs/server.key
 
-      # 4️⃣ Construimos la Imagen Docker de Nginx
+      # 4️⃣ Construcción de la Imagen Docker para Nginx
       - name: Build Nginx Docker image
         run: |
           docker build \
             -f nginx/Dockerfile.prod \
-            -t wellness-nginx:${{ github.run_number }} \
+            -t wellness-nginx:ci \
             nginx
-
-      # 5️⃣ (Opcional) Escanear Imagen en Runners Self-Hosted
-      - name: Docker Scan (Optional)
-        run: |
-          docker scan wellness-nginx:${{ github.run_number }} --accept-license
