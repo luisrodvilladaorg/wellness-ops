@@ -1,4 +1,4 @@
-name: Backend CI-Check
+name: Backend CI
 
 on:
   push:
