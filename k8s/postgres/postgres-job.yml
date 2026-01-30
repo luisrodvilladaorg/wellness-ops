@@ -31,9 +31,9 @@ spec:
                 -d "$POSTGRES_DB" \
                 -f /init/init.sql
           volumeMounts:
-            - name: init-sql
+            - name: init-sql-volume
               mountPath: /init
       volumes:
-        - name: init-sql
+        - name: init-sql-volume
           configMap:
             name: postgres-init

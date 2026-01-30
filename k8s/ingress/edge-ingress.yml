@@ -3,21 +3,15 @@ kind: Ingress
 metadata:
   name: edge
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/hsts: "true"
-    nginx.ingress.kubernetes.io/hsts-max-age: "63072000"
-    nginx.ingress.kubernetes.io/hsts-include-subdomains: "true"
-    nginx.ingress.kubernetes.io/hsts-preload: "true"
+    cert-manager.io/cluster-issuer: local-selfsigned
 spec:
-  ingressClassName: nginx-edge
+  ingressClassName: nginx-edge # <-- asegúrate que coincide con tu controlador
   tls:
     - hosts:
-        - luisops.com
+        - localhost
       secretName: edge-tls
   rules:
-    - host: luisops.com
+    - host: localhost
       http:
         paths:
           - path: /

@@ -35,17 +35,26 @@ spec:
                 name: backend-config
             - secretRef:
                 name: backend-secret
-
+            - secretRef:
+                name: backend-jwt-secret
           readinessProbe:
             httpGet:
               path: /api/health
               port: 3000
-            initialDelaySeconds: 10
+            initialDelaySeconds: 25
             periodSeconds: 5
-
+            failureThreshold: 5
           livenessProbe:
             httpGet:
               path: /api/health
               port: 3000
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 10
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
