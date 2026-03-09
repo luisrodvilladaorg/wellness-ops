@@ -3,7 +3,7 @@ name: Backend CD (Kubernetes)
 on:
   push:
     branches:
-      - "no-ejecutar-esta-rama"
+      - " no-ejecutar-esta-rama "
 
 jobs:
   deploy-backend:
