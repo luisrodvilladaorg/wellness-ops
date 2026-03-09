@@ -40,3 +40,8 @@ jobs:
 
       - name: CI completed
         run: echo "✅ Frontend image ${GITHUB_REF_NAME} pushed to GHCR"
+
+      - name: Debug pods
+        run: |
+           kubectl get pods
+           kubectl describe deployment frontend
