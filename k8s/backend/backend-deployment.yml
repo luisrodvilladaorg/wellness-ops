@@ -4,6 +4,7 @@ metadata:
   name: backend
 spec:
   replicas: 2
+  revisionHistoryLimit: 5
 
   strategy:
     type: RollingUpdate
@@ -19,9 +20,13 @@ spec:
     metadata:
       labels:
         app: backend
+        env: dev
+        version: v1.0.4
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "3000"
+        deployed-by: "luisrodvillada"
+        description: "Backend service for Wellness Ops application"
 
     spec:
       terminationGracePeriodSeconds: 16
@@ -38,11 +43,19 @@ spec:
                 sleep 2
               done
 
+      volumes:
+        - name: backend-logs
+          emptyDir: {}
+
       containers:
         - name: backend
           image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.4
           ports:
             - containerPort: 3000
+
+          volumeMounts:
+            - name: backend-logs
+              mountPath: /logs
 
           lifecycle:
             preStop:
@@ -80,3 +93,18 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+
+        - name: log-sidecar
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /logs
+              touch /logs/app.log
+              echo "Sidecar started..."
+              tail -n+1 -F /logs/app.log
+
+          volumeMounts:
+            - name: backend-logs
+              mountPath: /logs
