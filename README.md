@@ -1,17 +1,13 @@
 # 🧭 What is this?
 
-[![Backend CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-backend-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-backend-ci.yml)
-[![Frontend CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-frontend-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-frontend-ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellnes-ops/docker-stack-ci.yml?branch=main&label=CI)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-ci.yml)
+[![Security](https://img.shields.io/badge/Security-Trivy-informational?logo=trivy)](https://github.com/luisrodvilladaorg/wellnes-ops/security)
 [![Last Commit](https://img.shields.io/github/last-commit/luisrodvilladaorg/wellnes-ops?display_timestamp=committer&label=Last%20Commit&logo=github)](https://github.com/luisrodvilladaorg/wellnes-ops/commits/main)
-[![Nginx CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-nginx-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-nginx-ci.yml)
-[![Stack CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-ci.yml)
-[![Backend Image CI Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-backend-image-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-backend-image-ci.yml)
-[![Frontend Image CI Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-frontend-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-frontend-ci.yml)
-[![Frontend CD Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-frontend-cd.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-frontend-cd.yml)
-[![Nginx Gateway CD Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/nginx-gateway-cd.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/nginx-gateway-cd.yml)
-[![Stack CD Production](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-cd.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-cd.yml)
-[![Stack DOWN Production](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-down-prod.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-down-prod.yml)
-[![Stack ROLLBACK Production](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-rollback.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-rollback.yml)
+[![License](https://img.shields.io/github/license/luisrodvilladaorg/wellnes-ops?label=License)](LICENSE)
+
+[![Backend CI](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellnes-ops/docker-backend-ci.yml?branch=main&label=Backend%20CI)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-backend-ci.yml)
+[![Frontend CI](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellnes-ops/docker-frontend-ci.yml?branch=main&label=Frontend%20CI)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-frontend-ci.yml)
+[![CD Pipelines](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellnes-ops/docker-stack-cd.yml?label=CD%20Pipelines)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-cd.yml)
 
 This project is a fully containerized, production-ready DevOps environment designed to showcase modern infrastructure practices. It combines Docker, Kubernetes, GitHub Actions, NGINX, TLS, monitoring, and end-to-end CI/CD to demonstrate how a real-world application is built, deployed, and operated.
 

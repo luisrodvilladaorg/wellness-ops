@@ -12,10 +12,16 @@ spec:
   selector:
     matchLabels:
       app: frontend
+      
   template:
     metadata:
       labels:
         app: frontend
+        env: dev
+        version: v1.0.3
+      annotations:
+        deployed-by: "luisrodvillada"
+        description: "Frontend service for Wellness Ops application"
     spec:
       containers:
         - name: frontend-deployment
@@ -41,3 +47,12 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 2
             failureThreshold: 3
+
+
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"        

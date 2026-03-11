@@ -16,12 +16,13 @@ spec:
       containers:
         - name: postgres
           image: postgres:16-alpine
-
           ports:
             - containerPort: 5432
+
           envFrom:
             - secretRef:
                 name: postgres-secret
+
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -38,9 +39,36 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_DB
+
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data
+
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U postgres
+            initialDelaySeconds: 10
+            periodSeconds: 5
+
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U postgres
+            failureThreshold: 30
+            periodSeconds: 10
+
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              memory: "1Gi"
+
   volumeClaimTemplates:
     - metadata:
         name: data
