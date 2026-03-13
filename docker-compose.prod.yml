@@ -1,11 +1,10 @@
 services:
   frontend:
-    image: ghcr.io/luisrodvillada/wellnes-ops-frontend:latest
+    image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.5
     container_name: wellness-frontend
     networks:
-    - web_net
+      - web_net
     restart: unless-stopped
-
 
   nginx:
     image: ghcr.io/luisrodvillada/wellnes-ops-nginx:latest
@@ -25,14 +24,12 @@ services:
     restart: unless-stopped
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.prod
+    image: docker.io/1012362641/wellness-ops-backend:v1.0.5
     container_name: wellness-backend-prod
     env_file:
       - env/prod/.env
     depends_on:
-      - postgres  
+      - postgres
     networks:
       - backend_net
     restart: unless-stopped
@@ -41,6 +38,7 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+
   postgres:
     image: postgres:15-alpine
     container_name: wellness-postgres
@@ -63,6 +61,6 @@ networks:
     driver: bridge
   backend_net:
     driver: bridge
+
 volumes:
   db-data:
-
