@@ -1,5 +1,4 @@
 name: Build Images CI
-
 on:
   push:
     tags:
