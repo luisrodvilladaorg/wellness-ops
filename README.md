@@ -249,7 +249,13 @@ For advanced ingress and TLS setup, follow the documentation in `docs/`.
 ## 📚 Additional Resources
 
 - Kubernetes and Docker guide: [docs/kubernetes-guide.pdf](docs/kubernetes-guide.pdf)
-- HTTPS notes: [HTTPS.md](HTTPS.md)
+- End-to-end backend release workflow (from Git tag to automatic Kubernetes deployment with GitOps + ArgoCD): [docs/deployment-flow.md](docs/deployment-flow.md)
+- Domains and host mapping guide: [docs/dominios.md](docs/dominios.md)
+- Ingress Controller comparison (NGINX vs ALB): [docs/ingress-controller.md](docs/ingress-controller.md)
+- Why we use Prometheus + Grafana: [docs/observability-grafana-prometheus.md](docs/observability-grafana-prometheus.md)
+- TLS strategy with cert-manager (certificate chain and renewal): [docs/tls-cert-manager-strategy.md](docs/tls-cert-manager-strategy.md)
+- Operations runbook (Ingress / DB / Metrics): [docs/RUNBOOK.md](docs/RUNBOOK.md)
+- Security strategy (RBAC, NetworkPolicy, image scanning, secrets): [docs/SECURITY.md](docs/SECURITY.md)
 
 ---
 
