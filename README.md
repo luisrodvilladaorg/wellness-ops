@@ -12,7 +12,7 @@ Main application repository and local/Kubernetes operations workspace.
 End-to-end DevOps platform with clear separation between application code and GitOps desired state.
 
 - Node.js backend + frontend + PostgreSQL deployed on Kubernetes.
-- CI/CD with GitHub Actions and GitOps delivery with ArgoCD.
+- Continuous Integration/Continuous Delivery with GitHub Actions and GitOps delivery with ArgoCD.
 - `dev` and `prod` environments managed through Kustomize overlays.
 - Secure exposure through NGINX Ingress Controller + TLS (`cert-manager`).
 - Observability with Prometheus, Grafana, and `ServiceMonitor`.
@@ -24,7 +24,7 @@ Result: reproducible and traceable delivery aligned with real cluster operations
 ## Recruiter TL;DR
 
 - Production-style demo stack with `frontend + backend + PostgreSQL`.
-- CI/CD with **GitHub Actions + ArgoCD (GitOps model)**.
+- Continuous Integration/Continuous Delivery with **GitHub Actions + ArgoCD (GitOps model)**.
 - Repository split:
   - `wellnes-ops`: app code, Docker, workflows, documentation.
   - `wellness-gitops`: base/overlay manifests synchronized by ArgoCD.
@@ -106,7 +106,7 @@ wellnes-ops/
 
 ![Monitoring](docs/images/monitoring.png)
 
-## CI/CD (current)
+## Continuous Integration/Continuous Delivery (current)
 
 Main operational flow:
 
@@ -118,7 +118,7 @@ Flow documentation:
 
 - [docs/deployment-flow.md](docs/deployment-flow.md)
 
-## CI/CD Overview
+## Continuous Integration
 
 ![Pipelines](docs/images/deploy-nginx.png)
 
