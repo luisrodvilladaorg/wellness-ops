@@ -21,8 +21,10 @@ jobs:
         steps:
             # 1️⃣ Strict safety check
             - name: Validate confirmation
+              env:
+                CONFIRM: ${{ github.event.inputs.confirm }}
               run: |
-                  if [ "${{ github.event.inputs.confirm }}" != "ROLLBACK" ]; then
+                  if [ "$CONFIRM" != "ROLLBACK" ]; then
                     echo "❌ Confirmation failed. Type ROLLBACK to proceed."
                     exit 1
                   fi
@@ -39,25 +41,36 @@ jobs:
             # 3️⃣ Fetch repository and sync
             - name: Fetch repository
               run: |
-                  cd /opt/wellnes-ops
+                  cd /opt/wellness-ops
                   git fetch --all --tags
 
-            # 4️⃣ Roll back to the provided commit/tag
+            # 4️⃣ Validate ref and checkout
             - name: Checkout rollback ref
+              env:
+                REF: ${{ github.event.inputs.ref }}
               run: |
-                  cd /opt/wellnes-ops
-                  git reset --hard ${{ github.event.inputs.ref }}
+                  if [[ ! "$REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && \
+                     [[ ! "$REF" =~ ^[0-9a-f]{40}$ ]]; then
+                    echo "❌ Invalid ref format: '$REF'"
+                    echo "   Accepted formats:"
+                    echo "   - Semver tag : v1.2.3"
+                    echo "   - Full SHA   : 9f3a1c2d... (40 hex chars)"
+                    exit 1
+                  fi
+                  echo "✅ Ref validated: $REF"
+                  cd /opt/wellness-ops
+                  git reset --hard "$REF"
 
             # 5️⃣ Pull matching images
             - name: Pull images
               run: |
-                  cd /opt/wellnes-ops
+                  cd /opt/wellness-ops
                   docker compose -f docker-compose.prod.yml pull
 
             # 6️⃣ Start rollback stack
             - name: Deploy rollback stack
               run: |
-                  cd /opt/wellnes-ops
+                  cd /opt/wellness-ops
                   docker compose -f docker-compose.prod.yml up -d
 
             # 7️⃣ Show running containers
