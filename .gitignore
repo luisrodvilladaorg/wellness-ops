@@ -12,12 +12,12 @@ postgres-secret.yml
 backend/.env
 node_modules/
 env
-wellnes-ops-backup/
+wellness-ops-backup/
 .secrets
 reset-docker.sh
 Docker-practica
 HTTPS.md
-wellnes-ops.code-workspace
+wellness-ops.code-workspace
 apuntes
 pod-test
 k8s/
