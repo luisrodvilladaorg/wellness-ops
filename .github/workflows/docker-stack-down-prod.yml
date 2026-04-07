@@ -32,13 +32,13 @@ jobs:
 
       - name: Ensure clean repo state
         run: |
-          cd /opt/wellnes-ops
+          cd /opt/wellness-ops
           git fetch origin main
           git reset --hard origin/main
 
       - name: Stop Docker Compose stack
         run: |
-          cd /opt/wellnes-ops
+          cd /opt/wellness-ops
           docker compose -f docker-compose.prod.yml down --remove-orphans || true
 
       - name: Show running containers
@@ -51,6 +51,6 @@ jobs:
 
       - name: Ensure clean repo state
         run: |
-          cd /opt/wellnes-ops
+          cd /opt/wellness-ops
           git fetch origin main --prune
           git reset --hard origin/main

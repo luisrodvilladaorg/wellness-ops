@@ -22,18 +22,18 @@ jobs:
 
       - name: Ensure clean repo
         run: |
-          cd /opt/wellnes-ops
+          cd /opt/wellness-ops
           git fetch origin main
           git reset --hard origin/main
 
       - name: Pull images
         run: |
-          cd /opt/wellnes-ops
+          cd /opt/wellness-ops
           docker compose -f docker-compose.prod.yml pull
 
       - name: Deploy stack
         run: |
-          cd /opt/wellnes-ops
+          cd /opt/wellness-ops
           docker compose -f docker-compose.prod.yml up -d
 
       - name: Show running containers
@@ -53,6 +53,6 @@ jobs:
 
       - name: Ensure clean repo state
         run: |
-          cd /opt/wellnes-ops
+          cd /opt/wellness-ops
           git fetch origin main --prune
           git reset --hard origin/main

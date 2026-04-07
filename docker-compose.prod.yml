@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: ghcr.io/luisrodvillada/wellnes-ops-nginx:latest
+    image: ghcr.io/luisrodvillada/wellness-ops-nginx:latest
     build:
       context: ./nginx
       dockerfile: Dockerfile.prod

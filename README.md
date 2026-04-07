@@ -1,9 +1,9 @@
 # wellness-ops
 
-[![CI DEV](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellnes-ops/dev.yml?branch=main&label=CI%20DEV)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/dev.yml)
-[![CD PROD](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellnes-ops/prod.yml?label=CD%20PROD)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/prod.yml)
-[![Last Commit](https://img.shields.io/github/last-commit/luisrodvilladaorg/wellnes-ops?display_timestamp=committer&label=Last%20Commit&logo=github)](https://github.com/luisrodvilladaorg/wellnes-ops/commits/main)
-[![License](https://img.shields.io/github/license/luisrodvilladaorg/wellnes-ops?label=License)](LICENSE)
+[![CI DEV](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/dev.yml?branch=main&label=CI%20DEV)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/dev.yml)
+[![CD PROD](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/prod.yml?label=CD%20PROD)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/prod.yml)
+[![Last Commit](https://img.shields.io/github/last-commit/luisrodvilladaorg/wellness-ops?display_timestamp=committer&label=Last%20Commit&logo=github)](https://github.com/luisrodvilladaorg/wellness-ops/commits/main)
+[![License](https://img.shields.io/github/license/luisrodvilladaorg/wellness-ops?label=License)](LICENSE)
 
 Main application repository and local/Kubernetes operations workspace.
 
@@ -26,7 +26,7 @@ Result: reproducible and traceable delivery aligned with real cluster operations
 - Production-style demo stack with `frontend + backend + PostgreSQL`.
 - Continuous Integration/Continuous Delivery with **GitHub Actions + ArgoCD (GitOps model)**.
 - Repository split:
-  - `wellnes-ops`: app code, Docker, workflows, documentation.
+  - `wellness-ops`: app code, Docker, workflows, documentation.
   - `wellness-gitops`: base/overlay manifests synchronized by ArgoCD.
 - `dev` and `prod` environments via Kubernetes overlays.
 - Exposure through **NGINX Ingress Controller** and TLS via `cert-manager`.
@@ -34,8 +34,23 @@ Result: reproducible and traceable delivery aligned with real cluster operations
 
 ## Repository Model
 
-- `wellnes-ops`: application code, Dockerfiles, runtime configs, and operational docs.
+- `wellness-ops`: application code, Dockerfiles, runtime configs, and operational docs.
 - `wellness-gitops`: Kubernetes desired state (base + overlays) synchronized by ArgoCD.
+
+## Infrastructure & GitOps
+
+Kubernetes manifests and ArgoCD configuration live in a dedicated GitOps repository,
+following the GitOps pattern to keep application code and deployment state separated.
+
+-> [wellness-gitops](https://github.com/luisrodvilladaorg/wellness-gitops)
+
+Architecture:
+
+- CI pipeline builds and pushes images, then commits new image tags to the GitOps repo.
+- ArgoCD watches the GitOps repo and syncs changes to the cluster automatically.
+- Environments: `dev` / `prod` managed with Kustomize overlays.
+
+This avoids duplicating Kubernetes source-of-truth manifests across repositories.
 
 ## What this project does today
 
@@ -53,7 +68,7 @@ Result: reproducible and traceable delivery aligned with real cluster operations
 ## Project Structure
 
 ```text
-wellnes-ops/
+wellness-ops/
 ├── backend/                  # Node.js API, tests, Dockerfiles
 │   ├── src/
 │   └── test/
@@ -64,16 +79,14 @@ wellnes-ops/
 ├── env/                      # Environment variable files per environment
 │   ├── dev/
 │   └── prod/
-├── k8s/                      # Kubernetes manifests and deployment strategies
+├── k8s/                      # Local reference manifests (non-canonical)
 │   ├── backend/
 │   ├── frontend/
 │   ├── postgres/
 │   ├── ingress/
 │   ├── monitoring/
 │   ├── metallb/
-│   ├── tls/
-│   ├── bluegreen/
-│   └── canary-lab/
+│   └── tls/
 ├── nginx/                    # NGINX configs and Dockerfiles
 ├── docs/                     # Runbook, security, deployment flow, architecture images
 │   └── images/
@@ -89,7 +102,7 @@ wellnes-ops/
 
 - `backend/`: API service, runtime logic, tests, and image build definitions.
 - `frontend/`: static/frontend app and containerization config.
-- `k8s/`: production-style Kubernetes resources, including ingress, TLS, observability, and rollout labs.
+- `k8s/`: local reference manifests for practice and validation; canonical cluster desired state lives in `wellness-gitops`.
 - `docs/`: operational and architecture documentation.
 - `nginx/`: reverse-proxy configuration for container-based environments.
 - `monitoring-*`: observability resources split by Docker and Kubernetes contexts.
@@ -214,8 +227,8 @@ kubectl get all -n dev
 - Local startup (`dev`):
 
 ```bash
-git clone https://github.com/luisrodvilladaorg/wellnes-ops.git
-cd wellnes-ops
+git clone https://github.com/luisrodvilladaorg/wellness-ops.git
+cd wellness-ops
 docker compose -f docker-compose.dev.yml up -d
 ```
 

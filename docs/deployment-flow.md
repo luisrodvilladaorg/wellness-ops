@@ -6,7 +6,7 @@ Short version: this project shows a clean **GitOps release flow** from Git tag t
 
 ## ✨ At a glance
 
-- **Source repo:** `wellnes-ops`
+- **Source repo:** `wellness-ops`
 - **GitOps repo:** `wellness-gitops`
 - **Registry:** GHCR
 - **Delivery model:** GitHub Actions + ArgoCD
@@ -18,7 +18,7 @@ Short version: this project shows a clean **GitOps release flow** from Git tag t
 
 ### 1. 🏷️ Tag a release
 
-A tag such as `v2.1.15` triggers the workflow in [wellnes-ops/.github/workflows/kubernetes-build-push-images.yml](https://github.com/luisrodvilladaorg/wellnes-ops/blob/main/.github/workflows/kubernetes-build-push-images.yml).
+A tag such as `v2.1.15` triggers the workflow in [wellness-ops/.github/workflows/kubernetes-build-push-images.yml](https://github.com/luisrodvilladaorg/wellness-ops/blob/main/.github/workflows/kubernetes-build-push-images.yml).
 
 ### 2. 🏗️ Build and publish the backend image
 
@@ -75,7 +75,7 @@ flowchart LR
 
 ## 🔎 Quick proof points
 
-- Workflow: [wellnes-ops/.github/workflows/kubernetes-build-push-images.yml](https://github.com/luisrodvilladaorg/wellnes-ops/blob/main/.github/workflows/kubernetes-build-push-images.yml)
+- Workflow: [wellness-ops/.github/workflows/kubernetes-build-push-images.yml](https://github.com/luisrodvilladaorg/wellness-ops/blob/main/.github/workflows/kubernetes-build-push-images.yml)
 - GitOps deployment: [wellness-gitops/backend/backend-deployment.yml](https://github.com/luisrodvilladaorg/wellness-gitops/blob/main/backend/backend-deployment.yml)
 - GitOps structure: [wellness-gitops/backend](https://github.com/luisrodvilladaorg/wellness-gitops/tree/main/backend)
 
