@@ -89,7 +89,7 @@ services:
   # ==========================
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.3.0
     container_name: wellness-prometheus
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
@@ -104,7 +104,7 @@ services:
   # ==========================
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.6.1
     container_name: wellness-grafana
     ports:
     - "3001:3000"
