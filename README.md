@@ -61,6 +61,12 @@ This avoids duplicating Kubernetes source-of-truth manifests across repositories
   - `/api` -> `backend-service`
   - `/` -> `frontend-service`
 
+### Internal Security: Backend <-> PostgreSQL
+
+Backend-to-PostgreSQL traffic is handled through internal Kubernetes Services (`backend-service` and `postgres-service`) and is encrypted in transit with SSL/TLS.
+PostgreSQL is configured with `ssl=on` and the backend connects using SSL (`ssl: { rejectUnauthorized: false }` for a self-signed certificate setup).
+Operational validation confirmed active encrypted sessions (`TLSv1.3` with `AES-256-GCM`), while PostgreSQL remains private with no direct external exposure.
+
 ## Platform Overview
 
 ![Platform Overview](docs/images/overview.png)
