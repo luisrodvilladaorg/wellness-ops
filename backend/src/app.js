@@ -29,14 +29,6 @@ app.get("/health", (req, res) => {
     res.json({ status: "OK" });
 });
 
-// ==========================
-// Timeout test endpoint — remove after testing
-// ==========================
-app.get("/api/slow", async (req, res) => {
-  const delay = parseInt(req.query.delay) || 5000;
-  await new Promise(resolve => setTimeout(resolve, delay));
-  res.json({ message: "slow response", delay });
-});
 
 // ==========================
 // 404 handler
