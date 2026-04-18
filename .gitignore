@@ -29,4 +29,6 @@ k8s/
 k8s-labs
 k8s/postgres/postgres-ssl-plain.yml
 /docs/Readme.md
+/docs/argocd.md
 
+contexto-k8s.md
