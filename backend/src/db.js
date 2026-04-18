@@ -1,5 +1,7 @@
 const { Pool } = require("pg");
 
+const logger = require("./logger");
+
 const pool = new Pool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT || 5432,
@@ -16,10 +18,10 @@ async function waitForDB(retries = 10) {
     for (let i = 0; i < retries; i++) {
         try {
             await pool.query("SELECT 1");
-            console.log("Connected to PostgreSQL - success");
+            logger.info("Connected to PostgreSQL");
             return;
         } catch (err) {
-            console.log(`PostgreSQL not ready (${i + 1}/${retries})`);
+            logger.warn("PostgreSQL not ready", { attempt: i + 1, total: retries });
             await new Promise(r => setTimeout(r, 3000));
         }
     }
