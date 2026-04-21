@@ -7,6 +7,26 @@
 
 Main application repository and local/Kubernetes operations workspace.
 
+## Platform Overview
+
+![Platform Overview](docs/images/wellness-ops.png)
+
+## Architecture (current)
+
+![Architecture](docs/images/arquitecture.png)
+
+## ArgoCD
+
+![ArgoCD sync](docs/images/argocd.png)
+
+## Running Pods
+
+![Pods running (default)](docs/images/pods_running_default.png)
+
+## Dev Namespace
+
+![Pods running (dev)](docs/images/pods_running_dev.png)
+
 ## Quick Profile (Portfolio)
 
 End-to-end DevOps platform with clear separation between application code and GitOps desired state.
@@ -21,6 +41,42 @@ End-to-end DevOps platform with clear separation between application code and Gi
 
 Result: reproducible and traceable delivery aligned with real cluster operations.
 
+## Monitoring
+
+![Monitoring](docs/images/monitoring.png)
+
+## Continuous Integration
+
+![Pipelines](docs/images/Pipelines.png)
+
+## Continuous Delivery
+
+![Backend CD](docs/images/backend-cd.png)
+
+## Jobs (Reference)
+
+![Jobs](docs/images/jobs-working.png)
+
+## Continuous Integration/Continuous Delivery (current)
+
+Main operational flow:
+
+1. Push to `main` -> `dev.yml` workflow (build/push images + update `dev` overlays in `wellness-gitops`).
+2. Tag `v*.*.*` -> `prod.yml` workflow (promote images from `dev` to `prod` overlays in `wellness-gitops`).
+3. ArgoCD detects changes in `wellness-gitops` and syncs the cluster to the desired state in Git.
+
+Flow documentation:
+
+- [docs/deployment-flow.md](docs/deployment-flow.md)
+
+## Backend CI
+
+![Backend CI](docs/images/backend-ci.png)
+
+## Pipeline Visibility
+
+![Pipeline runs](docs/images/backend-cd-working.png)
+
 ## Recruiter TL;DR
 
 - Production-style demo stack with `frontend + backend + PostgreSQL`.
@@ -31,6 +87,30 @@ Result: reproducible and traceable delivery aligned with real cluster operations
 - `dev` and `prod` environments via Kubernetes overlays.
 - Exposure through **NGINX Ingress Controller** and TLS via `cert-manager`.
 - Observability with Prometheus/Grafana and backend `ServiceMonitor`.
+
+## Prometheus
+
+![Prometheus metrics](docs/images/metrics-2.png)
+
+## Grafana
+
+![Grafana dashboard](docs/images/metrics-grafana.png)
+
+## Key Metrics
+
+![Metrics](docs/images/metrics.png)
+
+## External Access
+
+### Ingress and Service Exposure
+
+![Ingress external IP](docs/images/ingress.png)
+
+![Ingress Service](docs/images/svc-ingress.png)
+
+## API Validation
+
+![cURL backend response](docs/images/curl-backend.png)
 
 ## Repository Model
 
@@ -52,6 +132,18 @@ Architecture:
 
 This avoids duplicating Kubernetes source-of-truth manifests across repositories.
 
+## Production Environment
+
+Production environment with the promoted release and stable runtime configuration.
+
+![Production environment](docs/images/wellness-ops-production.png)
+
+## Dev Environment
+
+Development environment focused on validation and fast iteration before production promotion.
+
+![Dev environment](docs/images/wellness-ops-dev.png)
+
 ## What this project does today
 
 - Builds frontend/backend images and publishes them to GHCR.
@@ -66,10 +158,6 @@ This avoids duplicating Kubernetes source-of-truth manifests across repositories
 Backend-to-PostgreSQL traffic is handled through internal Kubernetes Services (`backend-service` and `postgres-service`) and is encrypted in transit with SSL/TLS.
 PostgreSQL is configured with `ssl=on` and the backend connects using SSL (`ssl: { rejectUnauthorized: false }` for a self-signed certificate setup).
 Operational validation confirmed active encrypted sessions (`TLSv1.3` with `AES-256-GCM`), while PostgreSQL remains private with no direct external exposure.
-
-## Platform Overview
-
-![Platform Overview](docs/images/overview.png)
 
 ## Project Structure
 
@@ -113,74 +201,6 @@ wellness-ops/
 - `nginx/`: reverse-proxy configuration for container-based environments.
 - `monitoring-*`: observability resources split by Docker and Kubernetes contexts.
 
-## Architecture (current)
-
-![Architecture](docs/images/architecture-one.png)
-
-## Running Pods
-
-### Prod Namespace
-
-![Pods running (default)](docs/images/pods_running_default.png)
-
-### Dev Namespace
-
-![Pods running (dev)](docs/images/pods_running_dev.png)
-
-## Monitoring
-
-![Monitoring](docs/images/monitoring.png)
-
-## Continuous Integration/Continuous Delivery (current)
-
-Main operational flow:
-
-1. Push to `main` -> `dev.yml` workflow (build/push images + update `dev` overlays in `wellness-gitops`).
-2. Tag `v*.*.*` -> `prod.yml` workflow (promote images from `dev` to `prod` overlays in `wellness-gitops`).
-3. ArgoCD detects changes in `wellness-gitops` and syncs the cluster to the desired state in Git.
-
-Flow documentation:
-
-- [docs/deployment-flow.md](docs/deployment-flow.md)
-
-## Continuous Integration
-
-![Pipelines](docs/images/Pipelines.png)
-
-## Backend CI
-
-![Backend CI](docs/images/backend-ci.png)
-
-## Continuous Delivery
-
-![Backend CD](docs/images/backend-cd.png)
-
-## Pipeline Visibility
-
-![Pipeline runs](docs/images/backend-cd-working.png)
-
-## Jobs (Reference)
-
-![Jobs](docs/images/jobs-working.png)
-
-## ArgoCD
-
-Production CD control plane: ArgoCD continuously syncs production manifests from Git to keep cluster state aligned.
-
-![ArgoCD sync](docs/images/argocd.png)
-
-## Dev Environment
-
-Development environment focused on validation and fast iteration before production promotion.
-
-![Dev environment](docs/images/wellness-ops-dev.png)
-
-## Production Environment
-
-Production environment with the promoted release and stable runtime configuration.
-
-![Production environment](docs/images/wellness-ops-production.png)
-
 ## Current status (`dev` namespace)
 
 Snapshot taken on **2026-03-21**:
@@ -199,34 +219,6 @@ kubectl get all -n dev
 - Grafana dashboards are used for visualization.
 
 > Alertmanager is not declared as a confirmed operational component in this primary repository.
-
-## Prometheus
-
-![Prometheus metrics](docs/images/metrics-2.png)
-
-## Grafana
-
-![Grafana dashboard](docs/images/metrics-grafana.png)
-
-## Key Metrics
-
-![Metrics](docs/images/metrics.png)
-
-## External Access
-
-### Ingress and Service Exposure
-
-![Ingress external IP](docs/images/ingress.png)
-
-![Ingress Service](docs/images/svc-ingress.png)
-
-### API Validation
-
-![cURL backend response](docs/images/curl-backend.png)
-
-### Browser Validation
-
-![Browser access](docs/images/navegador.png)
 
 ## Quick usage
 
