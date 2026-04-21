@@ -5,11 +5,22 @@
 [![Last Commit](https://img.shields.io/github/last-commit/luisrodvilladaorg/wellness-ops?display_timestamp=committer&label=Last%20Commit&logo=github)](https://github.com/luisrodvilladaorg/wellness-ops/commits/main)
 [![License](https://img.shields.io/github/license/luisrodvilladaorg/wellness-ops?label=License)](LICENSE)
 
-Main application repository and local/Kubernetes operations workspace.
+# Production-grade Kubernetes platform — GitOps, CI/CD, TLS, and observability on k3s.
 
 ## Platform Overview
 
 ![Platform Overview](docs/images/wellness-ops.png)
+
+## TL;DR
+
+- **Stack**: Node.js backend + frontend + PostgreSQL on Kubernetes (k3s).
+- **CI/CD**: GitHub Actions builds and pushes images to GHCR on every commit.
+- **GitOps**: ArgoCD syncs desired state from [`wellness-gitops`](https://github.com/luisrodvilladaorg/wellness-gitops).
+- **Environments**: `dev` and `prod` via Kustomize overlays.
+- **Ingress**: NGINX Ingress Controller + TLS via `cert-manager`.
+- **Observability**: Prometheus + Grafana via `ServiceMonitor`.
+- **Security**: SealedSecrets, Trivy image scanning, Cosign image signing.
+- **Promotion flow**: semantic tag `v*.*.*` triggers production deployment.
 
 ## Architecture (current)
 
@@ -27,66 +38,19 @@ Main application repository and local/Kubernetes operations workspace.
 
 ![Pods running (dev)](docs/images/pods_running_dev.png)
 
-## Quick Profile (Portfolio)
-
-End-to-end DevOps platform with clear separation between application code and GitOps desired state.
-
-- Node.js backend + frontend + PostgreSQL deployed on Kubernetes.
-- Continuous Integration/Continuous Delivery with GitHub Actions and GitOps delivery with ArgoCD.
-- `dev` and `prod` environments managed through Kustomize overlays.
-- Secure exposure through NGINX Ingress Controller + TLS (`cert-manager`).
-- Observability with Prometheus, Grafana, and `ServiceMonitor`.
-- Production promotion flow driven by semantic tag `v*.*.*`.
-- Operational state validated in `dev` (backend/frontend/postgres running).
-
-Result: reproducible and traceable delivery aligned with real cluster operations.
-
 ## Monitoring
 
 ![Monitoring](docs/images/monitoring.png)
 
-## Continuous Integration
+## CI/CD Pipeline
+
+1. Push to `main` → `dev.yml` triggers build, pushes image to GHCR, updates `dev` overlay in `wellness-gitops`.
+2. Tag `v*.*.*` → `prod.yml` promotes image to `prod` overlay in `wellness-gitops`.
+3. ArgoCD detects the change and syncs the cluster automatically.
 
 ![Pipelines](docs/images/Pipelines.png)
-
-## Continuous Delivery
-
-![Backend CD](docs/images/backend-cd.png)
-
-## Jobs (Reference)
-
-![Jobs](docs/images/jobs-working.png)
-
-## Continuous Integration/Continuous Delivery (current)
-
-Main operational flow:
-
-1. Push to `main` -> `dev.yml` workflow (build/push images + update `dev` overlays in `wellness-gitops`).
-2. Tag `v*.*.*` -> `prod.yml` workflow (promote images from `dev` to `prod` overlays in `wellness-gitops`).
-3. ArgoCD detects changes in `wellness-gitops` and syncs the cluster to the desired state in Git.
-
-Flow documentation:
-
-- [docs/deployment-flow.md](docs/deployment-flow.md)
-
-## Backend CI
-
 ![Backend CI](docs/images/backend-ci.png)
-
-## Pipeline Visibility
-
-![Pipeline runs](docs/images/backend-cd-working.png)
-
-## Recruiter TL;DR
-
-- Production-style demo stack with `frontend + backend + PostgreSQL`.
-- Continuous Integration/Continuous Delivery with **GitHub Actions + ArgoCD (GitOps model)**.
-- Repository split:
-  - `wellness-ops`: app code, Docker, workflows, documentation.
-  - `wellness-gitops`: base/overlay manifests synchronized by ArgoCD.
-- `dev` and `prod` environments via Kubernetes overlays.
-- Exposure through **NGINX Ingress Controller** and TLS via `cert-manager`.
-- Observability with Prometheus/Grafana and backend `ServiceMonitor`.
+![Backend CD](docs/images/backend-cd.png)
 
 ## Prometheus
 
