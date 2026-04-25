@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /opt/wellness-ops show --stat 50061a3)",
+      "Bash(git -C /opt/wellness-ops show --stat daaec05)",
+      "Bash(git -C /opt/wellness-ops show --stat 131638d)"
+    ]
+  }
+}

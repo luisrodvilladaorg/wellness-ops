@@ -1,86 +1,91 @@
-# 🚀 Backend deployment flow
+# Deployment flow
 
-Short version: this project shows a clean **GitOps release flow** from Git tag to Kubernetes deployment.
+This project uses a two-pipeline GitOps model: a **CI Quality Gate** that protects `main`, and a **CD DEV** pipeline that deploys every merge automatically.
 
-![Backend pipeline preview](images/backend-cd-working.png)
-
-## ✨ At a glance
+## At a glance
 
 - **Source repo:** `wellness-ops`
 - **GitOps repo:** `wellness-gitops`
 - **Registry:** GHCR
 - **Delivery model:** GitHub Actions + ArgoCD
-- **Release trigger:** semantic tag like `v2.1.15`
+- **CI trigger:** pull request targeting `main`
+- **CD trigger:** push to `main` (merge)
 
 ---
 
-## 🧭 The flow in 5 steps
+## Pipelines
 
-### 1. 🏷️ Tag a release
+### CI — Quality Gate (`ci.yml`)
 
-A tag such as `v2.1.15` triggers the workflow in [wellness-ops/.github/workflows/kubernetes-build-push-images.yml](https://github.com/luisrodvilladaorg/wellness-ops/blob/main/.github/workflows/kubernetes-build-push-images.yml).
+Runs on every **pull request to `main`**. Merge is blocked until this passes.
 
-### 2. 🏗️ Build and publish the backend image
+| Job | What it does |
+|---|---|
+| `lint-and-test` | `npm ci` → `npm run lint` → `npm test` |
+| `build-and-scan` | Builds `backend/Dockerfile.prod`, runs Trivy (CRITICAL blocker), then discards the image |
 
-GitHub Actions validates the backend, builds the production image, and publishes it to GHCR.
+The image built here is **never pushed** — its only purpose is to catch vulnerabilities before they reach the registry.
 
-Example image:
+### CD — Deploy DEV (`cd-dev.yml`)
 
-- `ghcr.io/luisrodvilladaorg/wellness-ops-backend:v2.1.15`
+Runs on every **push to `main`** (i.e., after a PR merges). Tags images with the commit SHA.
 
-### 3. 📝 Update the GitOps repository
+| Job | What it does |
+|---|---|
+| `build-backend` | Builds + Trivy scan + pushes `wellness-ops-backend:<sha>` to GHCR |
+| `build-frontend` | Builds + Trivy scan + pushes `wellness-ops-frontend:<sha>` to GHCR |
+| `update-gitops-dev` | Patches `k8s/overlays/dev/backend/patch-image.yml` and `k8s/overlays/dev/frontend/patch-image.yml` in `wellness-gitops`, then commits and pushes |
 
-The same pipeline updates the backend image tag in [wellness-gitops/backend/backend-deployment.yml](https://github.com/luisrodvilladaorg/wellness-gitops/blob/main/backend/backend-deployment.yml) and pushes that change to the GitOps repo.
-
-### 4. 🔄 ArgoCD detects the new desired state
-
-ArgoCD watches the GitOps repository, sees the new image version, and syncs the cluster to match Git.
-
-> Note: the ArgoCD `Application` manifest is not present in this workspace, so this document describes the intended runtime setup already connected to `wellness-gitops`.
-
-### 5. ☸️ Kubernetes rolls out the new version
-
-Kubernetes performs a rolling update using the backend `Deployment`, which already includes:
-
-- `replicas: 2`
-- `RollingUpdate`
-- `readinessProbe`
-- `livenessProbe`
-
-This keeps the rollout safer and more production-like.
+ArgoCD watches `wellness-gitops` and syncs the DEV cluster automatically once the GitOps commit lands.
 
 ---
 
-## 🖼️ Release path
+## Full flow
 
 ```mermaid
-flowchart LR
-    A[Git tag] --> B[GitHub Actions]
-    B --> C[Build and push image to GHCR]
-    C --> D[Update GitOps manifest]
-    D --> E[ArgoCD sync]
-    E --> F[Kubernetes rolling update]
+flowchart TD
+    A[Open PR] --> B[CI Quality Gate]
+    B --> B1[Lint & Tests]
+    B --> B2[Build + Trivy scan]
+    B1 & B2 --> C{Pass?}
+    C -- No --> D[PR blocked]
+    C -- Yes --> E[Merge to main]
+    E --> F[CD — Deploy DEV]
+    F --> F1[Build + scan + push backend image]
+    F --> F2[Build + scan + push frontend image]
+    F1 & F2 --> G[Patch GitOps overlays/dev]
+    G --> H[ArgoCD detects drift]
+    H --> I[Kubernetes rolling update — DEV]
 ```
 
 ---
 
-## 💼 Why it matters
+## Image naming
 
-- **Traceable releases:** tag, image, and deployment stay aligned.
-- **Real GitOps:** Kubernetes state is updated through Git, not by hand.
-- **Automation:** no manual image edits in the cluster.
-- **Safer rollout:** probes and rolling updates reduce risk.
-
----
-
-## 🔎 Quick proof points
-
-- Workflow: [wellness-ops/.github/workflows/kubernetes-build-push-images.yml](https://github.com/luisrodvilladaorg/wellness-ops/blob/main/.github/workflows/kubernetes-build-push-images.yml)
-- GitOps deployment: [wellness-gitops/backend/backend-deployment.yml](https://github.com/luisrodvilladaorg/wellness-gitops/blob/main/backend/backend-deployment.yml)
-- GitOps structure: [wellness-gitops/backend](https://github.com/luisrodvilladaorg/wellness-gitops/tree/main/backend)
+| Pipeline | Image tag | Example |
+|---|---|---|
+| CI (quality gate) | `ci-<sha>` — local only, deleted after scan | `wellness-ops-backend:ci-abc1234` |
+| CD DEV | `<sha>` — pushed to GHCR | `wellness-ops-backend:abc1234` |
 
 ---
 
-## ✅ One-line summary
+## Why it matters
 
-**Git tag → GitHub Actions → GHCR image → GitOps update → ArgoCD sync → Kubernetes deployment**
+- **Protected main:** no code lands without lint, tests, and a clean Trivy scan.
+- **Continuous delivery to DEV:** every merge is live in the cluster within minutes, no manual steps.
+- **Real GitOps:** the cluster state is driven by Git — ArgoCD never receives direct `kubectl apply` calls.
+- **Traceable deployments:** SHA ties the running pod back to the exact commit.
+
+---
+
+## Quick proof points
+
+- CI workflow: [.github/workflows/ci.yml](../.github/workflows/ci.yml)
+- CD DEV workflow: [.github/workflows/cd-dev.yml](../.github/workflows/cd-dev.yml)
+- GitOps DEV overlay: [wellness-gitops/k8s/overlays/dev](https://github.com/luisrodvilladaorg/wellness-gitops/tree/main/k8s/overlays/dev)
+
+---
+
+## One-line summary
+
+**PR → CI Quality Gate → merge to main → CD DEV → GHCR images → GitOps patch → ArgoCD sync → Kubernetes DEV**
