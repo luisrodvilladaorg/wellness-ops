@@ -1,7 +1,9 @@
 # wellness-ops
 
-[![CI DEV](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/dev.yml?branch=main&label=CI%20DEV)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/dev.yml)
-[![CD PROD](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/prod.yml?label=CD%20PROD)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/prod.yml)
+[![CI Quality Gate](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/ci.yml?label=CI%20QUALITY)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/ci.yml)
+[![CD DEV](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/cd-dev.yml?branch=main&label=CD%20DEV)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/cd-dev.yml)
+[![CD STAGING](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/cd-staging.yml?label=CD%20STAGING)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/cd-staging.yml)
+[![CD PROD](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-gitops/cd.yml?label=CD%20PROD)](https://github.com/luisrodvilladaorg/wellness-gitops/actions/workflows/cd.yml)
 [![Last Commit](https://img.shields.io/github/last-commit/luisrodvilladaorg/wellness-ops?display_timestamp=committer&label=Last%20Commit&logo=github)](https://github.com/luisrodvilladaorg/wellness-ops/commits/main)
 [![License](https://img.shields.io/github/license/luisrodvilladaorg/wellness-ops?label=License)](LICENSE)
 
@@ -16,11 +18,11 @@
 - **Stack**: Node.js backend + frontend + PostgreSQL on Kubernetes (k3s).
 - **CI/CD**: GitHub Actions builds and pushes images to GHCR on every commit.
 - **GitOps**: ArgoCD syncs desired state from [`wellness-gitops`](https://github.com/luisrodvilladaorg/wellness-gitops).
-- **Environments**: `dev` and `prod` via Kustomize overlays.
+- **Environments**: `dev`, `staging`, and `prod` via Kustomize overlays.
 - **Ingress**: NGINX Ingress Controller + TLS via `cert-manager`.
 - **Observability**: Prometheus + Grafana via `ServiceMonitor`.
 - **Security**: SealedSecrets, Trivy image scanning, Cosign image signing.
-- **Promotion flow**: semantic tag `v*.*.*` triggers production deployment.
+- **Promotion flow**: `main` -> `dev`, release-candidate tags (`v*.*.*-rc.*`) -> `staging`, and release tags (`v*.*.*`) -> `prod`.
 
 ## Architecture (current)
 
@@ -49,9 +51,11 @@ Grafana dashboards provide real-time visibility into cluster and application hea
 
 ## CI/CD Pipeline
 
-1. Push to `main` → `dev.yml` triggers build, pushes image to GHCR, updates `dev` overlay in `wellness-gitops`.
-2. Tag `v*.*.*` → `prod.yml` promotes image to `prod` overlay in `wellness-gitops`.
-3. ArgoCD detects the change and syncs the cluster automatically.
+1. Pull request to `main` -> `ci.yml` executes lint, tests, build, and Trivy quality gate.
+2. Push to `main` -> `cd-dev.yml` builds backend/frontend images, scans with Trivy, pushes to GHCR, and updates `dev` overlays in `wellness-gitops`.
+3. Tag `v*.*.*-rc.*` -> `cd-staging.yml` builds/scans/pushes images and updates `staging` overlays in `wellness-gitops`.
+4. Tag `v*.*.*` -> production promotion workflow updates `prod` overlays in `wellness-gitops`.
+5. ArgoCD detects GitOps changes and syncs each environment automatically.
 
 ![Pipelines](docs/images/Pipelines.png)
 ![Backend CI](docs/images/backend-ci.png)
@@ -89,11 +93,27 @@ Production environment with the promoted release and stable runtime configuratio
 
 ![Production environment](docs/images/wellness-ops-production.png)
 
+> TODO: add updated production screenshot (April 2026 pipelines).
+
+## Staging Environment
+
+Pre-production environment for release-candidate validation (`v*.*.*-rc.*`).
+
+> TODO: add staging screenshot (pods + ArgoCD app sync).
+
 ## Dev Environment
 
 Development environment focused on validation and fast iteration before production promotion.
 
 ![Dev environment](docs/images/wellness-ops-dev.png)
+
+## Evidence Board (Pending Captures)
+
+This section is intentionally prepared to publish updates incrementally.
+
+- DEV capture pending: ArgoCD + pods + ingress response.
+- STAGING capture pending: ArgoCD + pods + release-candidate image tag.
+- PROD capture pending: ArgoCD + pods + stable version tag.
 
 ## What this project does today
 
@@ -150,16 +170,20 @@ wellness-ops/
 └── README.md
 ```
 
-## Current status (`dev` namespace)
+## Current status (multi-environment)
 
-Snapshot taken on **2026-03-21**:
+Snapshot updated for April 2026 rollout:
 
-- Pods: backend (2/2), frontend (1/1), postgres (1/1), init job completed.
-- Services: `backend-service` (3000), `frontend-service` (80), `postgres-service` (5432).
-- Deployments ready: backend (2 replicas), frontend (1 replica).
+- `dev` running and receiving continuous delivery from `main`.
+- `staging` running and receiving release-candidate promotions.
+- `prod` running with stable promoted releases.
+
+Quick verification commands:
 
 ```bash
 kubectl get all -n dev
+kubectl get all -n staging
+kubectl get all -n prod
 ```
 
 ## Quick usage
