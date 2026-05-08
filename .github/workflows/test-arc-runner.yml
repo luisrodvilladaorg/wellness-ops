@@ -1,0 +1,15 @@
+name: Test ARC Runner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: arc-runner-set
+    steps:
+      - name: Check runner
+        run: |
+          echo "✅ Runner funcionando"
+          hostname
+          whoami
+          kubectl version --client
