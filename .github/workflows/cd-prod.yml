@@ -14,7 +14,7 @@ jobs:
 
   build-backend:
     name: Build & Scan Backend
-    runs-on: self-hosted
+    runs-on: arc-runner-set
     if: ${{ !contains(github.ref_name, '-') }}
 
     permissions:
@@ -55,7 +55,7 @@ jobs:
 
   build-frontend:
     name: Build & Scan Frontend
-    runs-on: self-hosted
+    runs-on: arc-runner-set
     if: ${{ !contains(github.ref_name, '-') }}
 
     permissions:
@@ -94,7 +94,7 @@ jobs:
 
   update-gitops-prod:
     name: Update GitOps — PROD overlay
-    runs-on: self-hosted
+    runs-on: arc-runner-set
     needs: [build-backend, build-frontend]
     environment: production
 
