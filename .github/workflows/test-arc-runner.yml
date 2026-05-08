@@ -12,4 +12,12 @@ jobs:
           echo "✅ Runner funcionando"
           hostname
           whoami
-          kubectl version --client
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/kubectl
+
+      - name: Check kubectl
+        run: kubectl version --client
