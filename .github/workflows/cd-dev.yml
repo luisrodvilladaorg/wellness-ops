@@ -15,7 +15,7 @@ jobs:
 
   build-backend:
     name: Build & Scan Backend
-    runs-on: self-hosted
+    runs-on: arc-runner-set
 
     permissions:
       contents: read
@@ -55,7 +55,7 @@ jobs:
 
   build-frontend:
     name: Build & Scan Frontend
-    runs-on: self-hosted
+    runs-on: arc-runner-set
 
     permissions:
       contents: read
@@ -93,7 +93,7 @@ jobs:
 
   update-gitops-dev:
     name: Update GitOps — DEV overlay
-    runs-on: self-hosted
+    runs-on: arc-runner-set
     needs: [build-backend, build-frontend]
 
     steps:
