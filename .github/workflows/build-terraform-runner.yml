@@ -1,0 +1,32 @@
+name: Build Terraform Runner Image
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'runners/terraform-runner/Dockerfile'
+    branches: [main]
+
+jobs:
+  build:
+    name: Build and Push Terraform Runner
+    runs-on: arc-runner-set
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build image
+        run: |
+          docker build \
+            -t ghcr.io/luisrodvilladaorg/terraform-runner:latest \
+            -t ghcr.io/luisrodvilladaorg/terraform-runner:${{ github.sha }} \
+            runners/terraform-runner/
+
+      - name: Push image
+        run: |
+          docker push ghcr.io/luisrodvilladaorg/terraform-runner:latest
+          docker push ghcr.io/luisrodvilladaorg/terraform-runner:${{ github.sha }}
