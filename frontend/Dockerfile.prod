@@ -1,17 +1,11 @@
 # ==========================
 # Frontend PROD
 # ==========================
-
-# 1️⃣ Use official Nginx (lightweight and standard)
 FROM nginx:stable-alpine
 
-# 2️⃣ Clean default config (optional but recommended)
 RUN rm -rf /usr/share/nginx/html/*
 
-# 3️⃣ Copy prepared static website
 COPY mi-web/ /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# 4️⃣ Expose internal port (Docker only, not public by itself)
 EXPOSE 80
-
-# 5️⃣ Nginx starts automatically (CMD already defined in base image)
