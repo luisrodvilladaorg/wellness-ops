@@ -3,7 +3,7 @@
 [![CI Quality Gate](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/ci.yml?label=CI%20QUALITY)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/ci.yml)
 [![CD DEV](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/cd-dev.yml?branch=main&label=CD%20DEV)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/cd-dev.yml)
 [![CD STAGING](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/cd-staging.yml?label=CD%20STAGING)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/cd-staging.yml)
-[![CD PROD](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-gitops/cd.yml?label=CD%20PROD)](https://github.com/luisrodvilladaorg/wellness-gitops/actions/workflows/cd.yml)
+[![CD PROD](https://img.shields.io/github/actions/workflow/status/luisrodvilladaorg/wellness-ops/cd-prod.yml?label=CD%20PROD)](https://github.com/luisrodvilladaorg/wellness-ops/actions/workflows/cd-prod.yml)
 [![Last Commit](https://img.shields.io/github/last-commit/luisrodvilladaorg/wellness-ops?display_timestamp=committer&label=Last%20Commit&logo=github)](https://github.com/luisrodvilladaorg/wellness-ops/commits/main)
 [![License](https://img.shields.io/github/license/luisrodvilladaorg/wellness-ops?label=License)](LICENSE)
 [![Portfolio](https://img.shields.io/badge/Portfolio-luisops.com-blue)](https://www.luisops.com)
@@ -18,7 +18,7 @@
 **🌍 Production app live at**: [app.luisops.com](https://app.luisops.com)  
 **📊 Portfolio & architecture**: [luisops.com](https://www.luisops.com)
 
-![Live Production App](docs/images/app.luisops.png)
+![Live Production App](docs/images/v2/app.luisops.png)
 
 ### What you're seeing:
 - ✅ **Multi-environment deployment** (dev/staging/prod) synced from Git
@@ -49,39 +49,12 @@
 
 All applications synced, healthy, and continuously reconciling with Git state.
 
-![ArgoCD Applications](docs/images/argocd-apps.png)
+![ArgoCD Applications](docs/images/v2/argocd-apps.png)
 
 **Deployment Matrix**:
 - **9 Workload apps**: backend, frontend, postgres across dev/staging/prod
 - **4 Networking apps**: ingress for each environment + monitoring
 - **4 Platform apps**: kube-prom (full observability), Loki (logging), Promtail (log shipping), Cloudflared (external tunnel)
-
-## 🔍 Observability & Monitoring Stack
-
-### Metrics & Dashboards (Prometheus + Grafana)
-
-Real-time visibility into cluster health, application performance, and system resources.
-
-![Grafana Dashboards](docs/images/grafana-grafics.png)
-
-### Centralized Logging (Loki + Promtail)
-
-All logs from all 3 nodes aggregated in real-time with full-text search and alerting.
-
-![Loki Log Aggregation](docs/images/loki.png)
-
-### Smart Alerting (AlertManager)
-
-Intelligent alert routing with email notifications and escalation policies.
-
-![AlertManager Gmail Integration](docs/images/alert-manager-gmailpng.png)
-
-**Stack Summary**:
-- **Prometheus**: Scraping metrics from all workloads, system components, and nodes
-- **Grafana**: 15+ dashboards for cluster, application, and business metrics
-- **Loki**: Centralized log aggregation with 1M+ log lines/day capacity
-- **Promtail**: 3-node daemonset shipping logs from all nodes in real-time
-- **AlertManager**: Intelligent alert routing, deduplication, and email notifications
 
 ## ArgoCD Multi-Environment Orchestration
 
@@ -110,7 +83,43 @@ Platform (4):
 
 **Fully automated workflow** with code quality gates, security scanning, and multi-environment promotion.
 
-![GitHub Actions Pipelines](docs/images/pipelines.png)
+![GitHub Actions Pipelines](docs/images/v2/pipelines.png)
+
+## 🌍 Multi-Environment Orchestration in Action
+
+**Synchronized across 3 isolated production environments** with automated promotion flow.
+
+![Environments Dev/Staging/Prod](docs/images/v2/environments.png)
+
+### Production Environment ✅
+- **Status**: Running 24/7 with stable promoted releases
+- **Deployment**: 2 backend replicas + 1 frontend + 1 postgres StatefulSet (Longhorn volume)
+- **Ingress**: `wellness.local` exposed via LoadBalancer
+- **Images**: Stable release tags (`v*.*.*`)
+- **SLA**: Production-grade with pod disruption budgets and multi-node replication
+
+### Staging Environment ✅
+- **Status**: Running with release-candidate validation
+- **Deployment**: 1 backend replica + 1 frontend + 1 postgres (test data)
+- **Ingress**: `staging.wellness.local` for pre-release testing
+- **Images**: Release-candidate tags (`v*.*.*-rc.*`)
+- **Purpose**: Full compatibility validation before production promotion
+
+### Dev Environment ✅
+- **Status**: Running with continuous delivery from main branch
+- **Deployment**: 2 backend replicas + 1 frontend + 1 postgres (dev schema)
+- **Ingress**: `dev.wellness.local` for integration testing
+
+- **Multi-node**: 3-node cluster for fault tolerance
+- **Storage Replication**: Longhorn multi-replica volumes
+- **Backups**: Velero with automated schedules
+- **Health Checks**: Liveness/readiness probes on all workloads
+
+### Application Stack
+- **Backend**: Node.js (Express/Fastify pattern)
+- **Frontend**: Static SPA with nginx serving
+- **Database**: PostgreSQL with SSL/TLS encryption
+- **Testing**: Jest unit tests, ESLint code quality
 
 ### Pipeline Stages:
 
@@ -139,23 +148,21 @@ Platform (4):
 
 **Platform**: GitHub Actions with native Kubernetes execution via **Actions Runner Controller (ARC)** — runners execute inside the cluster for security and cost efficiency.
 
-## 🌐 External Access & Networking
+### ARC Runner Trigger Matrix
 
-**Primary Ingress**: LoadBalancer service with external IP `192.168.1.200` (MetalLB)
+How pipelines are triggered and executed in ARC:
 
-**Routing**:
-- **Production** (`wellness.local`): `/api` → backend-service | `/` → frontend-service
-- **Staging** (`staging.wellness.local`): Same routing, release-candidate images
-- **Dev** (`dev.wellness.local`): Same routing, latest from `main` branch
-- **Observability**: 
-  - ArgoCD: `argocd.wellness.local`
-  - Grafana: `grafana.wellness.local`
-  - Prometheus: `prometheus.wellness.local`
+- **CI Quality Gate** (`.github/workflows/ci.yml`): triggered on `pull_request` to `main`; runs on `self-hosted`.
+- **CD DEV** (`.github/workflows/cd-dev.yml`): triggered on `push` to `main`; runs on `arc-runner-set`.
+- **CD STAGING** (`.github/workflows/cd-staging.yml`): triggered by tags `v*.*.*-rc.*`; runs on `arc-runner-set`.
+- **CD PROD** (`.github/workflows/cd-prod.yml`): triggered by tags `v*.*.*` (stable only); runs on `arc-runner-set`.
+- **ARC Runner Test** (`.github/workflows/test-arc-runner.yml`): manual trigger via `workflow_dispatch` to validate runner availability.
 
-**External Exposure**:
-- **Cloudflare Tunnel** (`app.luisops`): Redundant, secure tunnel to production ingress
-- **TLS/HTTPS**: Automated certificate lifecycle via cert-manager (automatic renewal)
-- **Health Checks**: NGINX Ingress with liveness/readiness probes on all endpoints
+Promotion path: `main` -> `dev`, `-rc` tags -> `staging`, stable semantic tags -> `prod`.
+
+### <img src="https://cdn.simpleicons.org/gmail/EA4335" alt="Gmail" width="18" /> Gmail Alerts with Alertmanager
+
+![AlertManager Gmail Integration](docs/images/v2/alert-manager-gmailpng.png)
 
 ## Cluster Namespaces (17 total)
 
@@ -213,44 +220,6 @@ Platform (4):
 - Velero (1 deployment + 2 node-agents) for cluster backup/restore
 - Longhorn system components (manager, CSI drivers, UI)
 
-## 🌍 Multi-Environment Orchestration in Action
-
-**Synchronized across 3 isolated production environments** with automated promotion flow.
-
-![Environments Dev/Staging/Prod](docs/images/environments.png)
-
-### Production Environment ✅
-- **Status**: Running 24/7 with stable promoted releases
-- **Deployment**: 2 backend replicas + 1 frontend + 1 postgres StatefulSet (Longhorn volume)
-- **Ingress**: `wellness.local` exposed via LoadBalancer
-- **Images**: Stable release tags (`v*.*.*`)
-- **SLA**: Production-grade with pod disruption budgets and multi-node replication
-
-### Staging Environment ✅
-- **Status**: Running with release-candidate validation
-- **Deployment**: 1 backend replica + 1 frontend + 1 postgres (test data)
-- **Ingress**: `staging.wellness.local` for pre-release testing
-- **Images**: Release-candidate tags (`v*.*.*-rc.*`)
-- **Purpose**: Full compatibility validation before production promotion
-
-### Dev Environment ✅
-- **Status**: Running with continuous delivery from main branch
-- **Deployment**: 2 backend replicas + 1 frontend + 1 postgres (dev schema)
-- **Ingress**: `dev.wellness.local` for integration testing
-
-- **Multi-node**: 3-node cluster for fault tolerance
-- **Storage Replication**: Longhorn multi-replica volumes
-- **Backups**: Velero with automated schedules
-- **Health Checks**: Liveness/readiness probes on all workloads
-
-### Application Stack
-- **Backend**: Node.js (Express/Fastify pattern)
-- **Frontend**: Static SPA with nginx serving
-- **Database**: PostgreSQL with SSL/TLS encryption
-- **Testing**: Jest unit tests, ESLint code quality
-
----
-
 ## 📚 Learn More
 
 **🌐 Full Portfolio & Architecture Diagrams**: [luisops.com](https://www.luisops.com)  
@@ -292,7 +261,30 @@ wellness-ops/
 
 **100+ pods running across 17 namespaces** with zero downtime orchestration.
 
-![k9s Cluster Pods](docs/images/k9s-pods.png)
+![k9s Cluster Pods](docs/images/v2/k9s-pods.png)
+
+## 🔍 Observability & Monitoring Stack
+
+### Smart Alerting (AlertManager)
+
+Intelligent alert routing with email notifications and escalation policies.
+
+### Metrics & Dashboards (Prometheus + Grafana)
+
+Real-time visibility into cluster health, application performance, and system resources.
+
+![Grafana Dashboards](docs/images/v2/grafana-grafics.png)
+
+### Centralized Logging (Loki + Promtail)
+
+All logs from all 3 nodes aggregated in real-time with full-text search and alerting.
+
+**Stack Summary**:
+- **Prometheus**: Scraping metrics from all workloads, system components, and nodes
+- **Grafana**: 15+ dashboards for cluster, application, and business metrics
+- **Loki**: Centralized log aggregation with 1M+ log lines/day capacity
+- **Promtail**: 3-node daemonset shipping logs from all nodes in real-time
+- **AlertManager**: Intelligent alert routing, deduplication, and email notifications
 
 ## 📋 Current status (May 2026 — Production 24/7)
 
@@ -328,6 +320,24 @@ kubectl get all -n prod
 argocd app list  # View all 17 applications
 kubectl get backups -n velero  # View backup history
 ```
+
+## 🌐 External Access & Networking
+
+**Primary Ingress**: LoadBalancer service with external IP `192.168.1.200` (MetalLB)
+
+**Routing**:
+- **Production** (`wellness.local`): `/api` → backend-service | `/` → frontend-service
+- **Staging** (`staging.wellness.local`): Same routing, release-candidate images
+- **Dev** (`dev.wellness.local`): Same routing, latest from `main` branch
+- **Observability**:
+  - ArgoCD: `argocd.wellness.local`
+  - Grafana: `grafana.wellness.local`
+  - Prometheus: `prometheus.wellness.local`
+
+**External Exposure**:
+- **Cloudflare Tunnel** (`app.luisops`): Redundant, secure tunnel to production ingress
+- **TLS/HTTPS**: Automated certificate lifecycle via cert-manager (automatic renewal)
+- **Health Checks**: NGINX Ingress with liveness/readiness probes on all endpoints
 
 ## Quick usage
 
@@ -373,5 +383,11 @@ Project distributed under [LICENSE](LICENSE).
 ## Author
 
 Luis Fernando Rodríguez Villada  
-[LinkedIn](https://www.linkedin.com/in/luis-fernando-rodriguez-villada/?locale=es) · luisfernando198912@gmail.com
-# test arc runner
+[LinkedIn](https://www.linkedin.com/in/luis-fernando-rodriguez-villada/) · luisfernando198912@gmail.com  
+Live App: [app.luisops.com](https://app.luisops.com)  
+Portfolio: [luisops.com](https://www.luisops.com)
+
+## ARC Runner Test
+
+Validation workflow for Kubernetes ARC runners:
+- [.github/workflows/test-arc-runner.yml](.github/workflows/test-arc-runner.yml)
