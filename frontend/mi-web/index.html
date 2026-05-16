@@ -44,14 +44,15 @@
         <!-- ========================= -->
         <!-- LOGIN SECTION -->
         <!-- ========================= -->
-        <section id="login-section">
-            <h1>Welcome to Wellness Ops </h1>
+        <section id="login-section" class="d-flex flex-column align-items-center text-center">
+            <h1>Welcome to Wellness Ops</h1>
             <p>Please log in to continue</p>
 
-            <input id="username" placeholder="Username" class="form-control mb-2" />
-            <input id="password" type="password" placeholder="Password" class="form-control mb-3" />
-
-            <button class="btn btn-primary" onclick="login()">Login</button>
+            <div style="width: 320px;">
+                <input id="username" placeholder="Username" class="form-control mb-2" />
+                <input id="password" type="password" placeholder="Password" class="form-control mb-3" />
+                <button class="btn btn-primary w-100" onclick="login()">Login</button>
+            </div>
 
             <p id="login-error" class="mt-2 text-danger"></p>
         </section>
@@ -89,6 +90,9 @@
         </section>
 
     </div>
+
+    <!-- SPACER -->
+    <div style="min-height: 120px;"></div>
 
     <!-- ========================= -->
     <!-- FOOTER -->
