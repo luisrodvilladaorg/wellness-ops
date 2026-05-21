@@ -9,7 +9,7 @@ services:
   nginx:
     image:  ghcr.io/luisrodvilladaorg/wellness-ops-nginx-gateway:v1.0.6
     build:
-      context: ./nginx
+      context: ../nginx
       dockerfile: Dockerfile.prod
     container_name: wellness-nginx
     ports:

@@ -3,7 +3,7 @@
 services:
   backend:
     build:
-      context: ./backend
+      context: ../backend
       dockerfile: Dockerfile
       args:
         NODE_ENV: "${NODE_ENV}" # Set environment from .env
@@ -23,7 +23,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ../frontend
       dockerfile: ${FRONTEND_DOCKERFILE} # Dynamic Dockerfile for dev/prod
     container_name: wellness-frontend
     env_file:
@@ -41,7 +41,7 @@ services:
 
   nginx:
     build:
-      context: ./nginx
+      context: ../nginx
       dockerfile: ${NGINX_DOCKERFILE} # Dynamic across environments
     container_name: wellness-nginx
     ports:

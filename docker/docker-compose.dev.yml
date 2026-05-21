@@ -4,7 +4,7 @@ services:
   # ==========================
   frontend:
     build:
-      context: ./frontend
+      context: ../frontend
       dockerfile: Dockerfile.dev
     container_name: wellness-frontend-container
     ports:
@@ -23,7 +23,7 @@ services:
   # ==========================
   nginx:
     build:
-      context: ./nginx
+      context: ../nginx
       dockerfile: Dockerfile.dev
     container_name: wellness-nginx-proxy
     ports:
@@ -45,7 +45,7 @@ services:
   # ==========================
   backend:
     build:
-      context: ./backend
+      context: ../backend
       dockerfile: Dockerfile.dev
     container_name: wellness-backend-container
     ports:
