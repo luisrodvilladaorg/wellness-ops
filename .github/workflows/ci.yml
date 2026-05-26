@@ -76,6 +76,3 @@ jobs:
           severity: CRITICAL
           ignore-unfixed: true
 
-      - name: Cleanup local image
-        if: always()
-        run: docker rmi ${{ env.IMAGE_BACKEND }}:ci-${{ github.sha }} || true
