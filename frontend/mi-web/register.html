@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Ops - Register</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/templatemo-style.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-notes-medical me-2"></i>
+                Wellness Ops
+            </a>
+        </div>
+    </nav>
+
+    <div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll"
+        data-image-src="img/hero.jpg">
+        <h1 class="text-white">Wellness Journal v3</h1>
+    </div>
+
+    <div class="container-fluid tm-container-content tm-mt-60">
+        <section class="d-flex flex-column align-items-center text-center">
+            <h1>Create an Account</h1>
+            <p>Register to start using Wellness Ops</p>
+
+            <div style="width: 320px;">
+                <input id="username" placeholder="Username" class="form-control mb-2" />
+                <input id="password" type="password" placeholder="Password (min 6 characters)" class="form-control mb-3" />
+                <button class="btn btn-success w-100" onclick="register()">Register</button>
+                <a href="index.html" class="d-block mt-3 text-muted">Already have an account? Login</a>
+            </div>
+
+            <p id="register-error" class="mt-2 text-danger"></p>
+        </section>
+    </div>
+
+    <div style="min-height: 120px;"></div>
+
+    <footer class="tm-bg-gray pt-4 pb-4 tm-text-gray tm-footer">
+        <div class="container-fluid text-center">
+            <p class="mb-0">Wellness Ops · Docker · Node.js · PostgreSQL</p>
+        </div>
+    </footer>
+
+    <script src="/js/auth.js"></script>
+
+</body>
+</html>
