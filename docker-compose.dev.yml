@@ -5,8 +5,8 @@ services:
   # ==========================
   nginx:
     build:
-      context: ..
-      dockerfile: nginx/Dockerfile.dev
+      context: .
+      dockerfile: docker/nginx/Dockerfile.dev
     container_name: nginx
     ports:
       - "80:80"
@@ -22,7 +22,7 @@ services:
   # ==========================
   backend:
     build:
-      context: ../backend
+      context: ./backend
       dockerfile: Dockerfile.dev
     container_name: backend
     ports:
@@ -50,7 +50,7 @@ services:
       - env/dev/.env
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - backend_net
     restart: unless-stopped
@@ -60,34 +60,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-
-  # ==========================
-  # Prometheus
-  # ==========================
-  prometheus:
-    image: prom/prometheus:v3.3.0
-    container_name: wellness-prometheus
-    volumes:
-      - ../monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    ports:
-      - "9090:9090"
-    depends_on:
-      - backend
-    networks:
-      - backend_net
-
-  # ==========================
-  # Grafana
-  # ==========================
-  grafana:
-    image: grafana/grafana:11.6.1
-    container_name: wellness-grafana
-    ports:
-      - "3001:3000"
-    depends_on:
-      - prometheus
-    networks:
-      - backend_net
 
 # ==========================
 # Networks

@@ -28,6 +28,7 @@ async function login() {
     const error = document.getElementById("login-error");
 
     error.innerText = "";
+    error.classList.add("d-none");
 
     const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -37,6 +38,7 @@ async function login() {
 
     if (!res.ok) {
         error.innerText = "Invalid username or password";
+        error.classList.remove("d-none");
         return;
     }
 
@@ -46,17 +48,37 @@ async function login() {
 }
 
 // =========================
-// REGISTER
+// REGISTER PAGE
 // =========================
 async function register() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
     const error = document.getElementById("register-error");
+    const success = document.getElementById("register-success");
+
+    if (!usernameInput || !passwordInput || !error) {
+        return;
+    }
+
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
 
     error.innerText = "";
+    error.classList.add("d-none");
 
+    if (success) {
+        success.innerText = "";
+        success.classList.add("d-none");
+    }
+
+    if (!username) {
+        error.innerText = "Username is required";
+        error.classList.remove("d-none");
+        return;
+    }
     if (password.length < 6) {
         error.innerText = "Password must be at least 6 characters";
+        error.classList.remove("d-none");
         return;
     }
 
@@ -69,11 +91,39 @@ async function register() {
     if (!res.ok) {
         const data = await res.json();
         error.innerText = data.error || "Registration failed";
+        error.classList.remove("d-none");
         return;
     }
 
-    window.location.href = "index.html";
+    localStorage.setItem("lastRegisteredUsername", username);
+    sessionStorage.setItem("justRegistered", "1");
+
+    if (success) {
+        success.innerText = "Account created! Redirecting to login...";
+        success.classList.remove("d-none");
+    }
+
+    window.location.href = "/login.html";
 }
+
+function applyLoginPageHints() {
+    const loginError = document.getElementById("login-error");
+    if (!loginError) return;
+
+    if (sessionStorage.getItem("justRegistered") !== "1") return;
+
+    const lastUser = localStorage.getItem("lastRegisteredUsername") || "";
+    const usernameInput = document.getElementById("username");
+    if (lastUser && usernameInput) {
+        usernameInput.value = lastUser;
+    }
+
+    loginError.innerText = "Account created. You can log in now.";
+    loginError.classList.remove("d-none");
+    sessionStorage.removeItem("justRegistered");
+}
+
+document.addEventListener("DOMContentLoaded", applyLoginPageHints);
 
 // =========================
 // LOGOUT

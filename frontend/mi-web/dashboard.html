@@ -8,6 +8,70 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
     <link rel="stylesheet" href="css/templatemo-style.css">
+    <style>
+        .tm-hero {
+            min-height: 300px;
+            background-image:
+                linear-gradient(rgba(15, 25, 35, 0.55), rgba(15, 25, 35, 0.55)),
+                url('img/hero.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .tm-hero h1 {
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .dashboard-shell {
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+
+        .dashboard-card {
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 10px 24px rgba(7, 21, 34, 0.08);
+        }
+
+        .dashboard-card .card-header {
+            background: #f6f9fb;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .entries-panel {
+            max-height: 520px;
+            overflow-y: auto;
+        }
+
+        #entries-list .list-group-item {
+            border-left: 0;
+            border-right: 0;
+            padding: 0.9rem 1rem;
+        }
+
+        #entries-list .entry-title {
+            font-weight: 600;
+            color: #14395d;
+            margin-bottom: 0.25rem;
+            word-break: break-word;
+        }
+
+        #entries-list .entry-description {
+            margin-bottom: 0;
+            color: #58656f;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .form-control,
+        .form-control:focus {
+            border-radius: 10px;
+        }
+    </style>
 </head>
 
 <body>
@@ -19,41 +83,68 @@
                 Wellness Ops
             </a>
             <div id="navbar-user" class="ms-auto d-none d-flex align-items-center text-white">
-                <span id="user-info" class="me-3"></span>
+                <span id="user-info" class="me-4 pe-2"></span>
                 <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>
             </div>
         </div>
     </nav>
 
-    <div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll"
-        data-image-src="img/hero.jpg">
+    <div class="tm-hero d-flex justify-content-center align-items-center">
         <h1 class="text-white">Wellness Journal v3</h1>
     </div>
 
     <div class="container-fluid tm-container-content tm-mt-60">
+        <div class="dashboard-shell">
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+                <h2 class="tm-text-primary mb-0">My Dashboard</h2>
+                <p class="text-muted mb-0">Track your daily wellness notes in one place.</p>
+            </div>
 
-        <div class="row mb-5">
-            <div class="col-12">
-                <h2 class="tm-text-primary">Latest Entries</h2>
-                <ul id="entries-list" class="list-group mt-3"></ul>
+            <div class="row g-4 mb-5">
+                <div class="col-12 col-lg-5">
+                    <div class="card dashboard-card h-100">
+                        <div class="card-header">
+                            <h3 class="tm-text-primary mb-0">Add New Entry</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="entry-form">
+                                <label for="entry-title" class="form-label">Title</label>
+                                <input id="entry-title" class="form-control mb-3" placeholder="How are you feeling today?" required />
+
+                                <label for="entry-description" class="form-label">Description</label>
+                                <textarea id="entry-description" class="form-control mb-3" rows="6" placeholder="Write your wellness note..."></textarea>
+
+                                <button type="submit" class="btn btn-success w-100">Save entry</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-7">
+                    <div class="card dashboard-card h-100">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <h3 class="tm-text-primary mb-0">Latest Entries</h3>
+                            <span class="small text-muted">Most recent first</span>
+                        </div>
+                        <div class="card-body p-0 entries-panel">
+                            <ul id="entries-list" class="list-group list-group-flush mb-0"></ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="row mb-5">
-            <div class="col-md-8 col-lg-6">
-                <h3 class="tm-text-primary mb-3">Add New Entry</h3>
-                <form id="entry-form">
-                    <input id="entry-title" class="form-control mb-2" placeholder="Title" required />
-                    <textarea id="entry-description" class="form-control mb-3" placeholder="Description"></textarea>
-                    <button type="submit" class="btn btn-success">Save entry</button>
-                </form>
-            </div>
-        </div>
-
     </div>
 
     <div style="min-height: 120px;"></div>
 
     <footer class="tm-bg-gray pt-4 pb-4 tm-text-gray tm-footer">
         <div class="container-fluid text-center">
-            <p class="mb-0">Wellness
+            <p class="mb-0">Wellness Ops · Docker · Node.js · PostgreSQL</p>
+        </div>
+    </footer>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/entries.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>
