@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Ops - Register</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/templatemo-style.css">
+    <style>
+        .tm-hero {
+            min-height: 320px;
+            background-image:
+                linear-gradient(rgba(15, 25, 35, 0.55), rgba(15, 25, 35, 0.55)),
+                url('img/hero.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .tm-hero h1 {
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-box {
+            width: 100%;
+            max-width: 360px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="login.html">
+                <i class="fas fa-notes-medical me-2"></i>
+                Wellness Ops
+            </a>
+        </div>
+    </nav>
+
+    <div class="tm-hero d-flex justify-content-center align-items-center">
+        <h1 class="text-white">Create Your Account</h1>
+    </div>
+
+    <div class="container-fluid tm-container-content tm-mt-60">
+        <section class="d-flex flex-column align-items-center text-center">
+            <h1>Register</h1>
+            <p class="text-muted">Create a user and then log in from the login tab</p>
+
+            <div class="auth-box">
+                <input id="username" placeholder="Username" class="form-control mb-2" />
+                <input id="password" type="password" placeholder="Password (min 6 characters)" class="form-control mb-3" />
+                <button class="btn btn-success w-100" onclick="register()">Create Account</button>
+                <a href="login.html" class="d-block mt-3 text-muted">Back to Login</a>
+            </div>
+
+            <p id="register-error" class="mt-3 text-danger d-none"></p>
+            <p id="register-success" class="mt-2 text-success d-none"></p>
+        </section>
+    </div>
+
+    <div style="min-height: 120px;"></div>
+
+    <footer class="tm-bg-gray pt-4 pb-4 tm-text-gray tm-footer">
+        <div class="container-fluid text-center">
+            <p class="mb-0">Wellness Ops · Docker · Node.js · PostgreSQL</p>
+        </div>
+    </footer>
+
+    <script src="/js/auth.js"></script>
+
+</body>
+
+</html>
